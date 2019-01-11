@@ -75,6 +75,8 @@ def trade(symbol):
     df = build_dataframe_to_trade(symbol)
     last_record = df.iloc[-1]
     last_price = get_last_price(Bitfinex.btc, Bitfinex.name)
+    print(f"Trading {symbol}")
+    print("-" * 40)
     print(f"Last Price: {last_price}")
     print(f"Upper Band: {last_record['Upper Band']}")
     print(f"Lower Band: {last_record['Lower Band']}")

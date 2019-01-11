@@ -9,6 +9,18 @@
         "aws_environment_variables": {
           "URL_PREFIX": "/dev"
         },
+        "events": [{
+            "function": "app.trade_btc",
+            "expression": "rate(1 minute)"
+        }],
+        "events": [{
+            "function": "app.trade_ltc",
+            "expression": "rate(1 minute)"
+        }],
+        "events": [{
+            "function": "app.trade_eth",
+            "expression": "rate(1 minute)"
+        }],
         "keep_warm": false,
         "s3_bucket": "pydata-miami-test2"
     }
