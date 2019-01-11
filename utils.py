@@ -32,3 +32,22 @@ def get_historic_price(symbol, exchange='bitfinex', after='2018-09-01', period='
     df['CloseTime'] = pd.to_datetime(df['CloseTime'], unit='s')
     df.set_index('CloseTime', inplace=True)
     return df
+
+
+def get_last_price(symbol, exchange='bitfinex'):
+    url = 'https://api.cryptowat.ch/markets/{exchange}/{symbol}/price'.format(
+        symbol=symbol, exchange=exchange)
+    resp = requests.get(url)
+    resp.raise_for_status()
+    doc = resp.json()
+    return doc['result']['price']
+
+
+def build_dataframe_to_trade(symbol, exchange='bitfinex', rolling_periods=(24*7), num_std=2):
+    df = get_historic_price(symbol, exchange)
+    df['Rolling Mean'] = df['ClosePrice'].rolling(rolling_periods).mean()
+    df['Rolling Std'] = df['ClosePrice'].rolling(rolling_periods).std()
+
+    df['Upper Band'] = df['Rolling Mean'] + num_std * df['Rolling Std']
+    df['Lower Band'] = df['Rolling Mean'] - num_std * df['Rolling Std']
+    return df

@@ -1,6 +1,7 @@
 import json
 from io import BytesIO
 from base64 import b64encode
+from functools import partial
 
 import matplotlib.pyplot as plt
 from flask import Flask, request, render_template, jsonify
@@ -9,7 +10,7 @@ from bokeh.plotting import figure
 from bokeh import palettes
 from bokeh.embed import json_item
 
-from utils import get_historic_price
+from utils import get_historic_price, get_last_price, build_dataframe_to_trade
 from exchanges import Bitfinex
 
 
@@ -69,6 +70,28 @@ def bokeh(exchange, symbol):
     item_text = json.dumps(json_item(fig))
     return item_text, 200, {'content-type': 'application/json'}
 
+
+def trade(symbol):
+    df = build_dataframe_to_trade(symbol)
+    last_record = df.iloc[-1]
+    last_price = get_last_price(Bitfinex.btc, Bitfinex.name)
+    print(f"Last Price: {last_price}")
+    print(f"Upper Band: {last_record['Upper Band']}")
+    print(f"Lower Band: {last_record['Lower Band']}")
+
+    if last_price > last_record['Upper Band']:
+        return "Time to Sell"
+    elif last_price < last_record['Lower Band']:
+        return "Time to Buy"
+    else:
+        return "Stay put for now"
+
+
+def trade_btc():
+    return trade('btcusd')
+
+trade_ltc = partial(trade, 'ltcusd')
+trade_eth = partial(trade, 'ethusd')
 
 if __name__ == '__main__':
     app.debug = True

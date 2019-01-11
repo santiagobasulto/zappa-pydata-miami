@@ -9,6 +9,7 @@
         "aws_environment_variables": {
           "URL_PREFIX": "/dev"
         },
+        "keep_warm": false,
         "s3_bucket": "pydata-miami-test2"
     }
 }
