@@ -1,0 +1,14 @@
+{
+    "dev": {
+        "app_function": "app.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "pydata-miami-zappa-test1",
+        "runtime": "python3.6",
+        "slim_handler": true,
+        "aws_environment_variables": {
+          "URL_PREFIX": "/dev"
+        },
+        "s3_bucket": "pydata-miami-test2"
+    }
+}
