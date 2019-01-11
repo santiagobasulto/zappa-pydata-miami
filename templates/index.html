@@ -49,11 +49,46 @@
         <img src="data:image/png;base64,{{eth}}" class="img-fluid" alt="Ether">
       </div>
     </div>
+    
+    <div class="row main-chart-controls">
+      <div class="col text-center" >
+          <p class="text-center">
+            <span data-symbol="btcusd">Bitcoin</span> | <span data-symbol="ltcusd">Litecoin</span> | <span data-symbol="ethusd">Ether</span>
+          </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col d-flex bokeh-wrapper justify-content-center">
+        <img class="loading-spinner" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" alt="">
+        <div id="bokeh-container"></div>
+      </div>
+    </div>
 
+    <link
+        href="https://cdn.pydata.org/bokeh/release/bokeh-1.0.4.min.css"
+        rel="stylesheet" type="text/css">
+    <link
+        href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.0.4.min.css"
+        rel="stylesheet" type="text/css">
+    <link
+        href="https://cdn.pydata.org/bokeh/release/bokeh-tables-1.0.4.min.css"
+        rel="stylesheet" type="text/css">
+
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-1.0.4.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.0.4.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-1.0.4.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+    <script type="text/javascript">
+      window.API_ENDPOINTS = {
+        'btcusd': "{{ url_for('bokeh', exchange='bitfinex', symbol='btcusd') }}",
+        'ltcusd': "{{ url_for('bokeh', exchange='bitfinex', symbol='ltcusd') }}",
+        'ethusd': "{{ url_for('bokeh', exchange='bitfinex', symbol='ethusd') }}"
+      }
+    </script>
+    <script src="{{ url_for('static', filename='main.js') }}" charset="utf-8"></script>
     {# Graphic design is my passion #}
   </body>
 </html>

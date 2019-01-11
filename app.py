@@ -1,14 +1,20 @@
+import json
 from io import BytesIO
 from base64 import b64encode
 
 import matplotlib.pyplot as plt
 from flask import Flask, request, render_template, jsonify
 
+from bokeh.plotting import figure
+from bokeh import palettes
+from bokeh.embed import json_item
+
 from utils import get_historic_price
 from exchanges import Bitfinex
 
 
 app = Flask(__name__)
+
 
 def plot_bollinger_bands_base64(symbol, exchange, fig_size, rolling_periods=(24*7), num_std=2):
     df = get_historic_price(symbol, exchange)
@@ -40,6 +46,28 @@ def index():
     }
     return render_template('index.html', **context)
 
+
+@app.route('/bokeh/<exchange>/<symbol>/')
+def bokeh(exchange, symbol):
+    df = get_historic_price(symbol, exchange)
+
+    rolling_mean = df['ClosePrice'].rolling(24 * 7).mean()
+    rolling_std = df['ClosePrice'].rolling(24 * 7).std()
+    colors = iter(palettes.Spectral4)
+
+    fig = figure(
+        x_axis_type="datetime", title=f"{exchange.title()} - {symbol}", plot_width=1200)
+    fig.grid.grid_line_alpha = 0.3
+    fig.xaxis.axis_label = 'Date'
+    fig.yaxis.axis_label = 'Price'
+
+    fig.line(df.index, df['ClosePrice'], color=next(colors), legend='Close Price')
+    fig.line(df.index, rolling_mean, color=next(colors), legend='Rolling Mean')
+    fig.line(df.index, (rolling_mean - 2 * rolling_std), color=next(colors), legend='Lower Band')
+    fig.line(df.index, (rolling_mean + 2 * rolling_std), color=next(colors), legend='Upper Band')
+
+    item_text = json.dumps(json_item(fig))
+    return item_text, 200, {'content-type': 'application/json'}
 
 
 if __name__ == '__main__':
